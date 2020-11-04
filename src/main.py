@@ -106,8 +106,9 @@ def main():
 	parser.add_argument('--beamsearch', help='use beam search instead of best path decoding', action='store_true')
 	parser.add_argument('--wordbeamsearch', help='use word beam search instead of best path decoding', action='store_true')
 	parser.add_argument('--dump', help='dump output of NN to CSV file(s)', action='store_true')
+	parser.add_argument('--infer_filepath', help='filepath for images to be inferred')
 
-	args = parser.parse_args()
+	args,unknown = parser.parse_known_args()
 
 	decoderType = DecoderType.BestPath
 	if args.beamsearch:
@@ -138,8 +139,10 @@ def main():
 	else:
 		print(open(FilePaths.fnAccuracy).read())
 		model = Model(open(FilePaths.fnCharList).read(), decoderType, mustRestore=True, dump=args.dump)
-		infer(model, FilePaths.fnInfer)
-
+		if args.infer_filepath:
+			infer(model, args.infer_filepath)
+		else:
+			infer(model, FilePaths.fnInfer)
 
 if __name__ == '__main__':
 	main()
